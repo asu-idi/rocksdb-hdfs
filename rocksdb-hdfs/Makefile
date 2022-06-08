@@ -21,11 +21,11 @@ all: testhdfs, testhdfs2
 testhdfs: librocksdb testhdfs.cc
 	$(CXX) $(CXXFLAGS) $@.cc -o$@ ../librocksdb.a -I../include -I../plugin/hdfs -O2 -I${HADOOP_HOME}/include -L${HADOOP_HOME}/lib/native -lhdfs $(PLATFORM_LDFLAGS) $(PLATFORM_CXXFLAGS) $(EXEC_LDFLAGS)
 
-testhdfs2: librocksdb testhdfs2.cc
+rhdfs_readonly: librocksdb rhdfs_readonly.cc
 	$(CXX) $(CXXFLAGS) $@.cc -o$@ ../librocksdb.a -I../include -I../plugin/hdfs -O2 -I${HADOOP_HOME}/include -L${HADOOP_HOME}/lib/native -lhdfs $(PLATFORM_LDFLAGS) $(PLATFORM_CXXFLAGS) $(EXEC_LDFLAGS)
 
 clean:
-	rm -rf ./testhdfs
+	rm -rf ./testhdfs ./rhdfs_readonly
 
 librocksdb:
 	cd .. && $(MAKE) static_lib
