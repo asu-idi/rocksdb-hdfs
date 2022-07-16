@@ -6,7 +6,7 @@
 #include "rocksdb/env.h"
 #include "rocksdb/options.h"
 
-#include "env_hdfs.h"
+#include "plugin/hdfs/env_hdfs.h"
 #include "hdfs.h"
 
 using ROCKSDB_NAMESPACE::DB;
@@ -15,15 +15,15 @@ using ROCKSDB_NAMESPACE::ReadOptions;
 using ROCKSDB_NAMESPACE::Status;
 using ROCKSDB_NAMESPACE::WriteBatch;
 using ROCKSDB_NAMESPACE::WriteOptions;
+using ROCKSDB_NAMESPACE::DestroyDB;
 
-std::string kDBPath = "rdb_hdfs";
+std::string kDBPath = "test/rdb_hdfs";
 
-int main()
-{
+int main() {
     DB *db;
 
     std::unique_ptr<rocksdb::Env> hdfs;
-    rocksdb::NewHdfsEnv("hdfs://localhost:9000/rdb", &hdfs);
+    rocksdb::NewHdfsEnv("hdfs://10.218.106.144:9000/", &hdfs);
 
     Options options;
     options.env = hdfs.get();
@@ -42,19 +42,19 @@ int main()
     assert(s.ok());
 
     // Write 2nd pair
-    Status s2 = db->Put(WriteOptions(), "game6", "pubg");
-    std::cout << s2.ok();
+    s = db->Put(WriteOptions(), "game6", "pubg");
+    assert(s.ok());
 
     // Iterate over entire db
     std::cout << "Iterating over the entire db now!\n";
     rocksdb::Iterator *it = db->NewIterator(rocksdb::ReadOptions());
-    for (it->SeekToFirst(); it->Valid(); it->Next())
-    {
+    for (it->SeekToFirst(); it->Valid(); it->Next()) {
         std::cout << it->key().ToString() << ": " << it->value().ToString() << "\n";
     }
     assert(it->status().ok());
 
-    s = db->Close();
+    s = DestroyDB(kDBPath, options);
+    // s = db->Close();
     assert(s.ok());
 
     return 0;
