@@ -17,6 +17,7 @@
 #include "logging/logging.h"
 #include "rocksdb/status.h"
 #include "util/string_util.h"
+#include <string>
 
 #define HDFS_EXISTS 0
 #define HDFS_DOESNT_EXIST -1
@@ -525,7 +526,7 @@ IOStatus HdfsFileSystem::FileExists(const std::string& fname,
     default:  // anything else should be an error
       ROCKS_LOG_FATAL(mylog, "FileExists hdfsExists call failed");
       return IOStatus::IOError("hdfsExists call failed with error " +
-                               ROCKSDB_NAMESPACE::ToString(value) + " on path " + fname + ".\n");
+                               std::to_string(value) + " on path " + fname + ".\n");
   }
 }
 
