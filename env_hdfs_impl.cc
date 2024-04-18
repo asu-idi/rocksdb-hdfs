@@ -17,6 +17,7 @@
 #include "logging/logging.h"
 #include "rocksdb/status.h"
 #include "util/string_util.h"
+#include "port/sys_time.h"
 #include <string>
 
 #define HDFS_EXISTS 0
@@ -355,7 +356,7 @@ class HdfsLogger : public Logger {
       char* limit = base + bufsize;
 
       struct timeval now_tv;
-      gettimeofday(&now_tv, nullptr);
+      port::GetTimeOfDay(&now_tv, nullptr);
       const time_t seconds = now_tv.tv_sec;
       struct tm t;
       localtime_r(&seconds, &t);
